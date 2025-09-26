@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { functions } from "@/lib/firebase";
 import { httpsCallable } from "firebase/functions";
 import { useEffect, useState } from "react";
+import { useRequireAuth } from "@/context/AuthContext";
 
 // Sample tournament data - replace with your actual data source
 
@@ -15,6 +16,7 @@ type Tournament = {
 };
 
 export function TournamentsOverview() {
+  const user = useRequireAuth();
   const [tournaments, setTournaments] = useState<Array<Tournament>>([]);
   useEffect(() => {
     const fetchTournaments = async () => {

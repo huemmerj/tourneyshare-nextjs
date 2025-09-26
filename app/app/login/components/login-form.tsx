@@ -9,11 +9,13 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { functions, auth } from "@/lib/firebase";
+import { useRouter } from "next/navigation";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +33,7 @@ export function LoginForm() {
       // Signed in
       const user = userCredential.user;
       console.log("User signed in:", user);
+      router.push("/tournaments");
       // You can redirect or perform other actions here
     } catch (error) {
       const errorCode = (error as { code: string }).code;
