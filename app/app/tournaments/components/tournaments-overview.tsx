@@ -5,25 +5,24 @@ import { functions } from "@/lib/firebase";
 import { httpsCallable } from "firebase/functions";
 import { useEffect, useState } from "react";
 import { useRequireAuth } from "@/context/AuthContext";
+import { AddTournamentForm, Tournament } from "./add-tournament-form";
 
 // Sample tournament data - replace with your actual data source
-
-// type for Tournament
-type Tournament = {
-  id: number;
-  name: string;
-  game: string;
-};
 
 export function TournamentsOverview() {
   const user = useRequireAuth();
   const [tournaments, setTournaments] = useState<Array<Tournament>>([]);
+  const [isLoading, setIsLoading] = useState(true); // <-- Add a loading state
+  const handleTournamentAdded = (newTournament: Tournament) => {
+    setTournaments((prevTournaments) => [...prevTournaments, newTournament]);
+  };
   useEffect(() => {
     const fetchTournaments = async () => {
       const getTournaments = httpsCallable(functions, "getAllTournaments");
       const response = await getTournaments();
       const data = response.data as Array<Tournament>;
       setTournaments(data);
+      setIsLoading(false);
     };
     fetchTournaments().then((data) => {
       console.log("Fetched tournaments:", data);
@@ -32,21 +31,35 @@ export function TournamentsOverview() {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {tournaments.map((tournament) => (
-        <Card key={tournament.id} className="hover:shadow-lg transition-shadow">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg text-balance">
-              {tournament.name}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Badge variant="secondary" className="text-sm">
-              {tournament.game}
-            </Badge>
-          </CardContent>
-        </Card>
-      ))}
+    <div>
+      <div className="mb-6 flex justify-end">
+        {/* Pass the callback function to the form component */}
+        <AddTournamentForm onTournamentAdded={handleTournamentAdded} />
+      </div>
+
+      {isLoading ? (
+        <p className="text-center">Loading tournaments...</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {tournaments.map((tournament) => (
+            <Card
+              key={tournament.id}
+              className="hover:shadow-lg transition-shadow flex flex-col"
+            >
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg text-balance">
+                  {tournament.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex-grow flex flex-col justify-end">
+                <Badge variant="secondary" className="text-sm">
+                  {tournament.game}
+                </Badge>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
