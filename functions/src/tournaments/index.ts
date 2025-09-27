@@ -64,11 +64,11 @@ export const addTournament = onCall(async (request) => {
 
   // 2. Validate input data.
   const { name, game } = request.data;
-  if (typeof name !== "string" || typeof game !== "string") {
+  if (!name || typeof name !== "string" || !game || typeof game !== "string") {
     logger.warn("Invalid input data:", request.data);
     throw new HttpsError(
       "invalid-argument",
-      "The function must be called with two string arguments: 'name' and 'game'.",
+      "The function must be called with two non-empty string arguments: 'name' and 'game'.",
     );
   }
 
