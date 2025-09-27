@@ -98,3 +98,37 @@ export const addTournament = onCall(async (request) => {
     );
   }
 });
+
+export const deleteTournament = onCall(async (request) => {
+  // 1. Check for authentication
+  if (!request.auth) {
+    logger.error("User is not authenticated for deletion.");
+    throw new HttpsError(
+      "unauthenticated",
+      "You must be logged in to delete a tournament.",
+    );
+  }
+
+  // 2. Validate the incoming tournament ID
+  const tournamentId = request.data.id;
+  if (!tournamentId || typeof tournamentId !== "string") {
+    logger.error("Invalid tournamentId for deletion:", tournamentId);
+    throw new HttpsError(
+      "invalid-argument",
+      "A valid tournament ID must be provided.",
+    );
+  }
+
+  // 3. Delete the document from Firestore
+  try {
+    const db = getFirestore();
+    await db.collection("tournaments").doc(tournamentId).delete();
+    logger.info(`Successfully deleted tournament: ${tournamentId}`);
+
+    // 4. Return a success message
+    return { success: true, message: "Tournament deleted." };
+  } catch (error) {
+    logger.error("Error deleting document: ", error);
+    throw new HttpsError("internal", "Could not delete the tournament.");
+  }
+});
