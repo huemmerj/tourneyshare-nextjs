@@ -25,7 +25,6 @@ export type Tournament = {
   game: string;
 };
 
-// Define the component's props, including the callback
 type AddTournamentFormProps = {
   onTournamentAdded: (newTournament: Tournament) => void;
 };
@@ -38,11 +37,8 @@ export function AddTournamentForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleSubmit = async () => {
-    if (!name || !game) {
-      alert("Please fill out both fields.");
-      return;
-    }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsSubmitting(true);
 
     try {
@@ -73,44 +69,47 @@ export function AddTournamentForm({
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Create New Tournament</DialogTitle>
-          <DialogDescription>
-            Enter the details for the new tournament. Click save when you're
-            done.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="col-span-3"
-              placeholder="e.g., Summer Championship"
-            />
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>Create New Tournament</DialogTitle>
+            <DialogDescription>
+              Enter the details for the new tournament. Click save when you're
+              done.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="col-span-3"
+                placeholder="e.g., Summer Championship"
+                required
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="game" className="text-right">
+                Game
+              </Label>
+              <Input
+                id="game"
+                value={game}
+                onChange={(e) => setGame(e.target.value)}
+                className="col-span-3"
+                placeholder="e.g., Handball"
+              />
+            </div>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="game" className="text-right">
-              Game
-            </Label>
-            <Input
-              id="game"
-              value={game}
-              onChange={(e) => setGame(e.target.value)}
-              className="col-span-3"
-              placeholder="e.g., Valorant"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : "Save Tournament"}
-          </Button>
-        </DialogFooter>
+          <DialogFooter>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : "Save Tournament"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
