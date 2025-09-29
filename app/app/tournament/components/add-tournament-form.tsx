@@ -17,12 +17,14 @@ import { Label } from "@/components/ui/label";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "@/lib/firebase";
 import { PlusCircle } from "lucide-react";
+import { Team } from "./team-card";
 
 // Define the shape of the new tournament for our callback
 export type Tournament = {
   id: string; // Firestore IDs are strings
   name: string;
   game: string;
+  teams: Array<Team>;
 };
 
 type AddTournamentFormProps = {

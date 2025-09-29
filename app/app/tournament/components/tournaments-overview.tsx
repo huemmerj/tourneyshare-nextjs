@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // Sample tournament data - replace with your actual data source
 
@@ -29,6 +30,7 @@ export function TournamentsOverview() {
   const handleTournamentAdded = (newTournament: Tournament) => {
     setTournaments((prevTournaments) => [...prevTournaments, newTournament]);
   };
+  const router = useRouter();
   useEffect(() => {
     const fetchTournaments = async () => {
       const getTournaments = httpsCallable(functions, "getAllTournaments");
@@ -71,6 +73,7 @@ export function TournamentsOverview() {
             <Card
               key={tournament.id}
               className="hover:shadow-lg transition-shadow flex flex-col relative"
+              onClick={() => router.push(`/tournament/${tournament.id}`)}
             >
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg text-balance">

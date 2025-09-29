@@ -132,3 +132,118 @@ export const deleteTournament = onCall(async (request) => {
     throw new HttpsError("internal", "Could not delete the tournament.");
   }
 });
+
+export const getTournamentById = onCall(async (request) => {
+  // 1. Check if the user is authenticated.
+  if (!request.auth) {
+    logger.warn("Unauthenticated user tried to fetch a tournament.");
+    throw new HttpsError(
+      "unauthenticated",
+      "You must be logged in to view a tournament.",
+    );
+  }
+
+  const uid = request.auth.uid;
+  const tournamentId = request.data.id;
+
+  // 2. Validate the tournament ID.
+  if (!tournamentId || typeof tournamentId !== "string") {
+    logger.warn("Invalid tournament ID:", tournamentId);
+    throw new HttpsError(
+      "invalid-argument",
+      "A valid tournament ID must be provided.",
+    );
+  }
+
+  logger.info(`User ${uid} is fetching tournament ${tournamentId}.`);
+
+  try {
+    // 3. Get a reference to the Firestore database. with all teams
+    const db = getFirestore();
+    const docRef = db.collection("tournaments").doc(tournamentId);
+    const doc = await docRef.get();
+
+    // 4. Check if the document exists.
+    if (!doc.exists) {
+      logger.info(`Tournament ${tournamentId} not found.`);
+      throw new HttpsError("not-found", "Tournament not found.");
+    }
+
+    // 5. Return the tournament data.
+    return { id: doc.id, ...doc.data() };
+  } catch (error) {
+    logger.error("Error fetching tournament:", error);
+    throw new HttpsError(
+      "internal",
+      "An error occurred while fetching the tournament.",
+    );
+  }
+});
+
+export const addTeamToTournament = onCall(async (request) => {
+  // 1. Check if the user is authenticated.
+  if (!request.auth) {
+    logger.warn("Unauthenticated user tried to add a team.");
+    throw new HttpsError(
+      "unauthenticated",
+      "You must be logged in to add a team.",
+    );
+  }
+
+  const uid = request.auth.uid;
+  const { tournamentId, teamName } = request.data;
+
+  // 2. Validate input data.
+  if (
+    !tournamentId ||
+    typeof tournamentId !== "string" ||
+    !teamName ||
+    typeof teamName !== "string"
+  ) {
+    logger.warn("Invalid input data:", request.data);
+    throw new HttpsError(
+      "invalid-argument",
+      "The function must be called with two non-empty string arguments: 'tournamentId' and 'teamName'.",
+    );
+  }
+
+  logger.info(`User ${uid} is adding a team to tournament ${tournamentId}.`);
+
+  try {
+    // 3. Get a reference to the Firestore database.
+    const db = getFirestore();
+    const tournamentRef = db.collection("tournaments").doc(tournamentId);
+    const tournamentDoc = await tournamentRef.get();
+
+    // 4. Check if the tournament exists.
+    if (!tournamentDoc.exists) {
+      logger.warn(`Tournament ${tournamentId} not found.`);
+      throw new HttpsError("not-found", "Tournament not found.");
+    }
+
+    // 5. Create a new team object.
+    const newTeam = {
+      id: db.collection("tournaments").doc().id, // Generate a new ID
+      name: teamName,
+      players: 0, // Initial player count
+    };
+
+    // 6. Add the new team to the tournament's teams array.
+    await tournamentRef.update({
+      teams: [...(tournamentDoc.data()?.teams || []), newTeam],
+    });
+
+    logger.info(
+      `Team ${newTeam.id} added to tournament ${tournamentId} by user ${uid}.`,
+    );
+
+    // 7. Return the newly added team.
+    return newTeam;
+  } catch (error) {
+    logger.error("Error adding team to tournament:", error);
+    throw new HttpsError(
+      "internal",
+      "An error occurred while adding the team to the tournament.",
+    );
+  }
+});
