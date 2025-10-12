@@ -85,6 +85,9 @@ export function TournamentsOverview() {
                       variant="ghost"
                       size="icon"
                       className="h-12 w-12 shrink-0 absolute bottom-4 right-3"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevents the click from reaching the Card's onClick
+                      }}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -103,7 +106,10 @@ export function TournamentsOverview() {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => handleDeleteTournament(tournament.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteTournament(tournament.id);
+                        }}
                         className="bg-destructive hover:bg-destructive/90"
                       >
                         Continue
