@@ -3,7 +3,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "@/lib/firebase";
 import { Tournament } from "../components/add-tournament-form";
 import { useRequireAuth } from "@/context/AuthContext";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import TeamCard from "../components/team-card";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-export default function TournamentPage({ params }: { params: { id: string } }) {
+import { useParams } from "next/navigation";
+
+export default function TournamentPage() {
   const user = useRequireAuth();
   const getTournament = httpsCallable(functions, "getTournamentById");
   const [tournament, setTournament] = useState<Tournament>({} as Tournament);
@@ -27,6 +29,8 @@ export default function TournamentPage({ params }: { params: { id: string } }) {
   const [isAddTeamOpen, setIsAddTeamOpen] = useState(false);
   const [formData, setFormData] = useState({ name: "", players: 0 });
   // unwrap params using use from react
+
+  const params = useParams();
   const tournamentId = params.id;
 
   useEffect(() => {
@@ -52,9 +56,12 @@ export default function TournamentPage({ params }: { params: { id: string } }) {
     try {
       const addTeam = httpsCallable(functions, "addTeamToTournament");
       await addTeam({ tournamentId: tournamentId, teamName: formData.name });
-      setTournament((prev) => ({
+      setTournament((prev: Tournament) => ({
         ...prev,
-        teams: [...prev.teams, { id: Date.now().toString(), ...formData }],
+        teams: [
+          ...(prev.teams || []),
+          { id: Date.now().toString(), name: formData.name, players: [] },
+        ],
       }));
       setFormData({ name: "", players: 0 });
       setIsAddTeamOpen(false);
