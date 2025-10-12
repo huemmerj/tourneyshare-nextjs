@@ -247,3 +247,79 @@ export const addTeamToTournament = onCall(async (request) => {
     );
   }
 });
+
+const addPlayerToTeam = onCall(async (request) => {
+  // 1. Check if the user is authenticated.
+  if (!request.auth) {
+    logger.warn("Unauthenticated user tried to add a player.");
+    throw new HttpsError(
+      "unauthenticated",
+      "You must be logged in to add a player.",
+    );
+  }
+
+  const uid = request.auth.uid;
+  const { tournamentId, teamId, playerName } = request.data;
+  // 2. Validate input data.
+  if (
+    !tournamentId ||
+    typeof tournamentId !== "string" ||
+    !teamId ||
+    typeof teamId !== "string" ||
+    !playerName ||
+    typeof playerName !== "string"
+  ) {
+    logger.warn("Invalid input data:", request.data);
+    throw new HttpsError(
+      "invalid-argument",
+      "The function must be called with three non-empty string arguments: 'tournamentId', 'teamId', and 'playerName'.",
+    );
+  }
+
+  logger.info(
+    `User ${uid} is adding player ${playerName} to team ${teamId} in tournament ${tournamentId}.`,
+  );
+
+  try {
+    // 3. Get a reference to the Firestore database.
+    const db = getFirestore();
+    const tournamentRef = db.collection("tournaments").doc(tournamentId);
+    const tournamentDoc = await tournamentRef.get();
+
+    // 4. Check if the tournament exists.
+    if (!tournamentDoc.exists) {
+      logger.warn(`Tournament ${tournamentId} not found.`);
+      throw new HttpsError("not-found", "Tournament not found.");
+    }
+
+    // 5. Find the team within the tournament.
+    const team = tournamentDoc
+      .data()
+      ?.teams.find((t: { id: string }) => t.id === teamId);
+    if (!team) {
+      logger.warn(`Team ${teamId} not found in tournament ${tournamentId}.`);
+      throw new HttpsError("not-found", "Team not found.");
+    }
+
+    // 6. Add the player to the team's players array.
+    team.players.push({
+      id: db.collection("players").doc().id,
+      name: playerName,
+    });
+    await tournamentRef.update({ teams: tournamentDoc.data()?.teams });
+
+    logger.info(
+      `Player ${playerName} added to team ${teamId} in tournament ${tournamentId} by user ${uid}.`,
+    );
+
+    // 7. Return the updated team.
+    return team;
+  } catch (error) {
+    logger.error("Error adding player to team:", error);
+    throw new HttpsError(
+      "internal",
+      "An error occurred while adding the player to the team.",
+    );
+  }
+});
+export { addPlayerToTeam };

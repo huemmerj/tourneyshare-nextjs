@@ -1,4 +1,7 @@
 "use client";
+import { Pencil, Trash2, Users, UserPlus, Check } from "lucide-react";
+import { useState } from "react";
+
 import {
   Card,
   CardContent,
@@ -6,9 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-import { Pencil, Trash2, Users, UserPlus } from "lucide-react";
 
 export type Player = {
   id: string;
@@ -23,6 +25,14 @@ export type Team = {
 };
 
 export default function TeamCard({ team }: { team: Team }) {
+  const [playerName, setPlayerName] = useState("");
+
+  const handleAddPlayer = () => {
+    if (!playerName.trim()) return;
+    // Logic to add player to the team
+    console.log("Adding player:", playerName);
+    setPlayerName("");
+  };
   return (
     <Card key={team.id} className="hover:shadow-lg transition-shadow">
       <CardHeader>
@@ -96,15 +106,22 @@ export default function TeamCard({ team }: { team: Team }) {
               No players yet. Add your first player!
             </div>
           )}
-
-          <Button
-            variant="outline"
-            className="w-full bg-transparent"
-            onClick={() => console.log("Add player clicked")}
-          >
-            <UserPlus className="h-4 w-4 mr-2" />
-            Add Player
-          </Button>
+          <div className="flex items-center gap-2">
+            <Input
+              placeholder="Player name"
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              className="flex-1"
+            />
+            <Button
+              size="icon"
+              onClick={handleAddPlayer}
+              disabled={!playerName.trim()}
+            >
+              <Check className="h-4 w-4" />
+              <span className="sr-only">Add player</span>
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
