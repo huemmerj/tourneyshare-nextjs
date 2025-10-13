@@ -1,6 +1,9 @@
+import { getAuthUser } from "@/lib/auth";
 import { TournamentsOverview } from "./components/tournaments-overview";
+import { request } from "https";
 
-export default function Home() {
+export default async function Home() {
+  await getAuthUser();
   return (
     <main className="container mx-auto py-8 px-4">
       <div className="max-w-4xl mx-auto">
