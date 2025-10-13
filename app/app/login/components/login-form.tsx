@@ -30,10 +30,15 @@ export function LoginForm() {
         email,
         password
       );
-
-      // Signed in
-      const user = userCredential.user;
-      console.log("User signed in:", user);
+      const idToken = await userCredential.user.getIdToken();
+      console.log("ID Token:", idToken);
+      fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idToken }),
+      });
       router.push("/tournaments");
     } catch (error) {
       const errorCode = (error as { code: string }).code;
