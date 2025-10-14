@@ -7,10 +7,9 @@ import { cache } from "react";
 
 export const getAuthUser = cache(async (): Promise<DecodedIdToken | null> => {
   const sessionCookie = (await cookies()).get("session")?.value || "";
-
   // If session cookie is not present, return null
   if (!sessionCookie) {
-    console.log("Session cookie could not be found.");
+    console.error("Session cookie could not be found.");
     return null;
   }
 

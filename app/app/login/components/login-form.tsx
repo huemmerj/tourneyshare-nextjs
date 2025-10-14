@@ -31,9 +31,9 @@ export function LoginForm() {
         password
       );
       const idToken = await userCredential.user.getIdToken();
-      console.log("ID Token:", idToken);
       fetch("/api/login", {
         method: "POST",
+        cache: "no-store",
         headers: {
           "Content-Type": "application/json",
         },
