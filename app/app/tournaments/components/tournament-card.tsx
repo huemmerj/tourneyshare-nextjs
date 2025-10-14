@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 import { Tournament } from "@/lib/tournaments";
+import { DeleteTournamentDialog } from "./delete-tournament-dialog";
 
 interface TournamentCardProps {
   tournament: Tournament;
@@ -20,6 +21,7 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
         <Badge variant="secondary" className="font-semibold">
           {tournament.game}
         </Badge>
+        <DeleteTournamentDialog tournament={tournament} />
       </CardFooter>
     </Card>
   );

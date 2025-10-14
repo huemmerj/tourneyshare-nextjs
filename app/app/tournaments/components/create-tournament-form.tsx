@@ -44,6 +44,7 @@ export function CreateTournamentForm() {
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
+      // @Todo only reload if the request was successful
       window.location.reload();
       setLoading(false);
     }
