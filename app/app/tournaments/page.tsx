@@ -1,6 +1,7 @@
 import { getAuthUser } from "@/lib/auth";
 import { TournamentsOverview } from "./components/tournaments-overview";
 import { request } from "https";
+import { CreateTournament } from "./components/create-tournament-dialog";
 
 export default async function Home() {
   await getAuthUser();
@@ -11,8 +12,8 @@ export default async function Home() {
           <h1 className="text-3xl font-bold text-balance">
             Tournament Overview
           </h1>
+          <CreateTournament />
         </div>
-
         <TournamentsOverview />
       </div>
     </main>
