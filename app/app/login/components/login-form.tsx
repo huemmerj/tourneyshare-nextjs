@@ -43,17 +43,16 @@ export function LoginForm() {
         throw new Error("Failed to set session cookie");
       }
 
-      // Now redirect after the cookie is set
-      router.push("/tournaments");
-      router.refresh(); // Force a refresh to revalidate server components
+      // Use replace instead of push to avoid login page in history
+      router.replace("/tournaments");
     } catch (error) {
       const errorCode = (error as { code: string }).code;
       const errorMessage = (error as { message: string }).message;
 
-      setIsLoading(false);
       console.error("Error signing in:", errorCode, errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
