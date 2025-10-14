@@ -7,10 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 
@@ -31,7 +28,9 @@ export function LoginForm() {
         password
       );
       const idToken = await userCredential.user.getIdToken();
-      fetch("/api/login", {
+
+      // IMPORTANT: Wait for the cookie to be set before redirecting
+      const response = await fetch("/api/login", {
         method: "POST",
         cache: "no-store",
         headers: {
@@ -39,7 +38,14 @@ export function LoginForm() {
         },
         body: JSON.stringify({ idToken }),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to set session cookie");
+      }
+
+      // Now redirect after the cookie is set
       router.push("/tournaments");
+      router.refresh(); // Force a refresh to revalidate server components
     } catch (error) {
       const errorCode = (error as { code: string }).code;
       const errorMessage = (error as { message: string }).message;

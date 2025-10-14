@@ -9,13 +9,14 @@ export const getAuthUser = cache(async (): Promise<DecodedIdToken | null> => {
   const sessionCookie = (await cookies()).get("session")?.value || "";
   // If session cookie is not present, return null
   if (!sessionCookie) {
-    console.error("Session cookie could not be found.");
+    console.log("Session cookie could not be found.");
     return null;
   }
 
   try {
     const auth = getAuth(firebaseAdminApp);
     const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
+    console.log("Session verified for user:", decodedClaims.uid);
     return decodedClaims;
   } catch (error) {
     console.error("Error verifying session cookie:", error);

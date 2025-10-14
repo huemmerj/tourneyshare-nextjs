@@ -1,10 +1,14 @@
 import { getAuthUser } from "@/lib/auth";
 import { TournamentsOverview } from "./components/tournaments-overview";
-import { request } from "https";
 import { CreateTournament } from "./components/create-tournament-dialog";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
-  await getAuthUser();
+  const user = await getAuthUser();
+
+  if (!user) {
+    redirect("/login");
+  }
   return (
     <main className="container mx-auto py-8 px-4">
       <div className="max-w-4xl mx-auto">
