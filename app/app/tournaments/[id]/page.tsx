@@ -4,11 +4,12 @@ import { CreateTeamDialog } from "../components/create-team-dialog";
 export default async function TournamentPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
 
   const tournament = (await getTournamentById(id)) as Tournament;
+  console.log(tournament);
 
   return (
     <main className="container mx-auto py-8 px-4">
