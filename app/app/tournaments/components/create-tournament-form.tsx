@@ -9,10 +9,7 @@ import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 
 const tournamentSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Tournament name is required")
-    .max(10, "Tournament name is too long"),
+  name: z.string().min(1, "Tournament name is required"),
   game: z.string().min(1, "Game is required"),
 });
 export function CreateTournamentForm() {
