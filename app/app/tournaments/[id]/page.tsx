@@ -1,5 +1,4 @@
 import { getTournamentById, Tournament } from "@/lib/tournaments";
-import { TeamsList } from "../components/teams-list";
 import { CreateTeamDialog } from "../components/create-team-dialog";
 
 export default async function TournamentPage({
@@ -7,7 +6,9 @@ export default async function TournamentPage({
 }: {
   params: { id: string };
 }) {
-  const tournament = (await getTournamentById(params.id)) as Tournament;
+  const { id } = await params;
+
+  const tournament = (await getTournamentById(id)) as Tournament;
 
   return (
     <main className="container mx-auto py-8 px-4">
