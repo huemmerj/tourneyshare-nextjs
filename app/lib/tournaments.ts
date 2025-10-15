@@ -4,6 +4,7 @@ export interface Tournament {
   id: string;
   name: string;
   game: string;
+  teams: string[];
 }
 
 /**

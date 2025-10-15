@@ -28,7 +28,7 @@ async function verifySession(request: NextRequest) {
 // GET /api/tournaments/[id] - Get a single tournament
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } } // Corrected signature
 ) {
   const user = await verifySession(request);
 
@@ -40,7 +40,7 @@ export async function GET(
   }
 
   try {
-    const { id } = params;
+    const { id } = context.params; // Get id from context.params
     const tournament = await getTournamentById(id);
 
     if (!tournament) {
@@ -63,7 +63,7 @@ export async function GET(
 // DELETE /api/tournaments/[id] - Delete a tournament
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } } // Corrected signature
 ) {
   const user = await verifySession(request);
 
@@ -75,7 +75,7 @@ export async function DELETE(
   }
 
   try {
-    const { id } = params;
+    const { id } = context.params;
 
     if (!id) {
       return NextResponse.json(
@@ -99,7 +99,7 @@ export async function DELETE(
 // PATCH /api/tournaments/[id] - Update a tournament
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   const user = await verifySession(request);
 
@@ -111,7 +111,7 @@ export async function PATCH(
   }
 
   try {
-    const { id } = params;
+    const { id } = context.params;
     const data = await request.json();
 
     await updateTournament(id, data);
