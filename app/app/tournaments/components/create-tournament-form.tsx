@@ -82,10 +82,12 @@ export function CreateTournamentForm() {
         )}
       />
 
-      <Button className="mt-4" type="submit">
-        {loading && <Spinner />}
-        Create
-      </Button>
+      <div className="flex justify-end">
+        <Button className="mt-4" type="submit">
+          {loading && <Spinner />}
+          Create
+        </Button>
+      </div>
     </form>
   );
 }
