@@ -16,8 +16,6 @@ export async function POST(request: NextRequest) {
     }
 
     const auth = getAuth(firebaseAdminApp);
-    const decodedToken = await auth.verifyIdToken(idToken);
-    const uid = decodedToken.uid;
 
     const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days in milliseconds
 

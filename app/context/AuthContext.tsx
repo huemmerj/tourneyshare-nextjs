@@ -4,7 +4,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
-import { redirect } from "next/navigation";
 const AuthContext = createContext<{ user: User | null; loading: boolean }>({
   user: null,
   loading: true,

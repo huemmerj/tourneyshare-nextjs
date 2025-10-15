@@ -2,8 +2,8 @@ import { getFirestore } from "firebase-admin/firestore";
 
 export interface Tournament {
   id: string;
-  // Add your tournament properties here
-  [key: string]: any;
+  name: string;
+  game: string;
 }
 
 /**

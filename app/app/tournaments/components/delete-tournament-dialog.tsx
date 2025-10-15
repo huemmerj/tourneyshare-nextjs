@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { Tournament } from "@/lib/tournaments";
 import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 export function DeleteTournamentDialog({
   tournament,
@@ -30,7 +31,6 @@ export function DeleteTournamentDialog({
         throw new Error("Failed to delete tournament");
       }
 
-      // Reload the page to show updated list
       window.location.reload();
     } catch (error) {
       console.error("Error deleting tournament:", error);
@@ -51,6 +51,7 @@ export function DeleteTournamentDialog({
         <DialogFooter>
           <Button variant="outline">Cancel</Button>
           <Button onClick={onSubmit} variant="destructive">
+            {loading && <Spinner />}
             Delete
           </Button>
         </DialogFooter>

@@ -1,5 +1,3 @@
-// create a method to check sessino cookie and return user if valid
-import { NextRequest, NextResponse } from "next/server";
 import { DecodedIdToken, getAuth } from "firebase-admin/auth";
 import { app as firebaseAdminApp } from "@/lib/firebase-admin";
 import { cookies } from "next/headers";
