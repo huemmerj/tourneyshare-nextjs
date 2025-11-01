@@ -4,9 +4,14 @@ export interface Tournament {
   id: string;
   name: string;
   game: string;
-  teams: string[];
+  teams: TournamentTeam[];
 }
 
+export interface TournamentTeam {
+  id: number;
+  name: string;
+  players: string[];
+}
 /**
  * Fetches all tournaments from Firestore
  * @returns Array of tournaments with their IDs

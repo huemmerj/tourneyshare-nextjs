@@ -26,7 +26,7 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
       onClick={handleClickTournament}
       className="p-0 group overflow-hidden transition-all hover:shadow-lg cursor-pointer"
     >
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex-1">
         <h3 className="text-balance text-xl font-bold leading-tight text-card-foreground">
           {tournament.name}
         </h3>
